@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en" ng-app="pawCareApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawCare - Pet Owner Registration</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #fff8fb;
+            color: #444;
+        }
+
+        header {
+            background: #e85d8f;
+            color: white;
+            text-align: center;
+            padding: 22px;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        nav {
+            background: #fff0f6;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            display: inline-block;
+            margin: 5px 12px;
+            color: #c63e73;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 25px auto;
+            padding: 25px;
+            background: white;
+            border: 1px solid #f5c6d8;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(232, 93, 143, 0.12);
+        }
+
+        h2 {
+            color: #d94379;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            margin-top: 6px;
+            border: 1px solid #e8a4bf;
+            border-radius: 5px;
+        }
+
+        .gender label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        .gender input {
+            width: auto;
+        }
+
+        .error {
+            color: #c62828;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #e85d8f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .success {
+            padding: 15px;
+            margin-top: 15px;
+            background: #fff0f6;
+            border-radius: 6px;
+            color: #a52b60;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            padding: 18px;
+            background: #fff0f6;
+            color: #a34b70;
+        }
+    </style>
+</head>
+
+<body ng-controller="MainController">
+
+<header>
+    <h1>🐾 PawCare</h1>
+    <p>Your Pet's Health and Happiness Matter!</p>
+</header>
+
+<nav>
+    <a href="#!/">Home</a>
+    <a href="#!/register">Pet Owner Registration</a>
+    <a href="#!/care">Pet Care</a>
+</nav>
+
+<div ng-view></div>
+
+<footer>
+    Caring for Pets, One Paw at a Time! 🐾
+</footer>
+
+<script>
+    var app = angular.module("pawCareApp", ["ngRoute"]);
+
+    app.config(function($routeProvider) {
+        $routeProvider
+        .when("/", {
+            template: `
+                <div class="container">
+                    <h2>Welcome to PawCare!</h2>
+                    <p>Manage your pet's health and daily care with us.</p>
+                    <p>Register as a pet owner to get started.</p>
+                    <a href="#!/register">Register Now</a>
+                </div>
+            `
+        })
+        .when("/register", {
+            template: `
+                <div class="container" ng-controller="RegisterController">
+                    <h2>Pet Owner Registration Form</h2>
+
+                    <form name="regForm" ng-submit="submitForm()" novalidate>
+
+                        <label>Full Name *</label>
+                        <input type="text" name="ownerName"
+                               ng-model="owner.name"
+                               ng-pattern="/^[A-Za-z ]+$/"
+                               required>
+
+                        <div class="error"
+                             ng-show="regForm.ownerName.$touched &&
+                                      regForm.ownerName.$invalid">
+                            Enter a name using letters and spaces only.
+                        </div>
+
+                        <label>Password *</label>
+                        <input type="password" name="password"
+                               ng-model="owner.password"
+                               ng-pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/"
+                               required>
+
+                        <div class="error"
+                             ng-show="regForm.password.$touched &&
+                                      regForm.password.$invalid">
+                            Use at least 8 characters, including uppercase,
+                            lowercase, and a number.
+                        </div>
+
+                        <label>Age *</label>
+                        <input type="number" name="age"
+                               ng-model="owner.age"
+                               min="18" max="100" required>
+
+                        <div class="error"
+                             ng-show="regForm.age.$touched &&
+                                      regForm.age.$invalid">
+                            Age must be between 18 and 100.
+                        </div>
+
+                        <label>Mobile Number *</label>
+                        <input type="text" name="mobile"
+                               ng-model="owner.mobile"
+                               ng-pattern="/^[0-9]{10}$/"
+                               required>
+
+                        <div class="error"
+                             ng-show="regForm.mobile.$touched &&
+                                      regForm.mobile.$invalid">
+                            Enter a valid 10-digit mobile number.
+                        </div>
+
+                        <label>Email *</label>
+                        <input type="email" name="email"
+                               ng-model="owner.email" required>
+
+                        <div class="error"
+                             ng-show="regForm.email.$touched &&
+                                      regForm.email.$invalid">
+                            Enter a valid email address.
+                        </div>
+
+                        <label>Gender *</label>
+                        <div class="gender">
+                            <label>
+                                <input type="radio" name="gender"
+                                       ng-model="owner.gender"
+                                       value="Male" required>
+                                Male
+                            </label>
+
+                            <label>
+                                <input type="radio" name="gender"
+                                       ng-model="owner.gender"
+                                       value="Female" required>
+                                Female
+                            </label>
+                        </div>
+
+                        <label>State *</label>
+                        <select name="state" ng-model="owner.state" required>
+                            <option value="">Select State</option>
+                            <option>Tamil Nadu</option>
+                            <option>Kerala</option>
+                            <option>Karnataka</option>
+                            <option>Andhra Pradesh</option>
+                            <option>Telangana</option>
+                        </select>
+
+                        <div class="error"
+                             ng-show="regForm.state.$touched &&
+                                      regForm.state.$invalid">
+                            Please select a state.
+                        </div>
+
+                        <button type="submit"
+                                ng-disabled="regForm.$invalid">
+                            Submit Registration
+                        </button>
+
+                        <div class="success" ng-if="submitted">
+                            <h3>Registration Successful!</h3>
+                            <p>Welcome to PawCare, {{owner.name}}!</p>
+                            <p>Your pet owner registration was completed.</p>
+                        </div>
+
+                    </form>
+                </div>
+            `,
+            controller: "RegisterController"
+        })
+        .when("/care", {
+            template: `
+                <div class="container">
+                    <h2>Pet Care Services</h2>
+                    <p>🐶 Pet Grooming</p>
+                    <p>🐾 Veterinary Checkups</p>
+                    <p>💉 Vaccination Tracking</p>
+                    <p>🏠 Pet Boarding</p>
+                    <p>Give your pets the care and attention they deserve!</p>
+                </div>
+            `
+        })
+        .otherwise({
+            redirectTo: "/"
+        });
+    });
+
+    app.controller("MainController", function($scope) {
+    });
+
+    app.controller("RegisterController", function($scope) {
+        $scope.owner = {};
+        $scope.submitted = false;
+
+        $scope.submitForm = function() {
+            $scope.submitted = true;
+        };
+    });
+</script>
+
+</body>
+</html>
